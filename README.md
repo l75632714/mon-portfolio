@@ -1,7 +1,6 @@
-# Mon portfolio
+# Portfolio
 
-Mon portfolio
-
+Portfolio
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -30,20 +29,25 @@ Mon portfolio
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 40px 20px;
+            padding: 40px 20px 20px 20px;
             position: relative;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* En-tête */
         header {
             max-width: 1200px;
+            width: 100%;
             margin: 0 auto 40px auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid var(--text-color);
             padding-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .header-titles h1 {
@@ -57,11 +61,16 @@ Mon portfolio
             margin-top: 4px;
         }
 
-        .btn-toggle-edit {
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-header {
             background-color: var(--accent-sage);
             color: white;
             border: 2px solid var(--text-color);
-            padding: 10px 20px;
+            padding: 10px 16px;
             font-weight: bold;
             border-radius: 4px;
             cursor: pointer;
@@ -69,7 +78,7 @@ Mon portfolio
             transition: all 0.2s ease;
         }
 
-        .btn-toggle-edit:hover {
+        .btn-header:hover {
             transform: translate(-2px, -2px);
             box-shadow: 5px 5px 0px var(--text-color);
         }
@@ -79,16 +88,22 @@ Mon portfolio
             column-count: 3;
             column-gap: 24px;
             max-width: 1200px;
+            width: 100%;
             margin: 0 auto;
+            flex: 1;
         }
 
         @media (max-width: 900px) { .grid-affiches { column-count: 2; } }
         @media (max-width: 600px) { .grid-affiches { column-count: 1; } }
 
         /* Composant Affiche */
-        .affiche {
+        .affiche-wrapper {
             break-inside: avoid;
             margin-bottom: 24px;
+            display: block;
+        }
+
+        .affiche {
             background-color: var(--card-bg);
             border: 2px solid var(--text-color);
             box-shadow: 4px 4px 0px var(--text-color);
@@ -137,11 +152,30 @@ Mon portfolio
             padding: 20px;
             background-position: center;
             background-size: cover;
+            position: relative;
+            cursor: pointer;
         }
 
         .h-petite { height: 180px; }
         .h-moyenne { height: 260px; }
         .h-grande { height: 350px; }
+
+        /* Icone lien externe */
+        .affiche-link-icon {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1.5px solid var(--text-color);
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: var(--text-color);
+        }
 
         /* Contenu de l'affiche */
         .affiche-corps {
@@ -155,6 +189,13 @@ Mon portfolio
             font-weight: 700;
         }
 
+        .affiche-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
         .affiche-badge {
             display: inline-block;
             padding: 4px 10px;
@@ -166,7 +207,44 @@ Mon portfolio
             box-shadow: 2px 2px 0px var(--text-color);
         }
 
-        /* Commandes d'édition sur l'affiche */
+        /* Barre d'interaction */
+        .affiche-interactions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-interact {
+            background: white;
+            border: 1.5px solid var(--text-color);
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 2px 2px 0px var(--text-color);
+            transition: all 0.15s ease;
+        }
+
+        .btn-interact svg {
+            width: 15px;
+            height: 15px;
+            fill: none;
+            stroke: var(--text-color);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .btn-interact:hover {
+            transform: translateY(-1px);
+            background: var(--bg-color);
+        }
+
+        /* Commandes d'édition */
         .affiche-actions {
             position: absolute;
             top: 10px;
@@ -189,10 +267,6 @@ Mon portfolio
             cursor: pointer;
             border-radius: 3px;
             box-shadow: 2px 2px 0px var(--text-color);
-        }
-
-        .btn-action:hover {
-            background: var(--bg-color);
         }
 
         /* Bouton Ajouter Affiche Flottant */
@@ -220,12 +294,21 @@ Mon portfolio
             display: flex;
         }
 
-        .btn-ajouter-affiche:hover {
-            transform: scale(1.05);
-            box-shadow: 6px 6px 0px var(--text-color);
+        /* Pied de page (Footer Copyright) */
+        footer {
+            max-width: 1200px;
+            width: 100%;
+            margin: 60px auto 0 auto;
+            padding-top: 20px;
+            border-top: 2px solid var(--text-color);
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-color);
+            opacity: 0.85;
         }
 
-        /* Modal de création / modification d'affiche */
+        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -241,9 +324,11 @@ Mon portfolio
             border: 2px solid var(--text-color);
             box-shadow: 8px 8px 0px var(--text-color);
             width: 90%;
-            max-width: 500px;
+            max-width: 550px;
             padding: 24px;
             border-radius: 8px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-titre {
@@ -253,10 +338,7 @@ Mon portfolio
             padding-bottom: 8px;
         }
 
-        .form-champ {
-            margin-bottom: 14px;
-        }
-
+        .form-champ { margin-bottom: 14px; }
         .form-champ label {
             display: block;
             font-size: 0.85rem;
@@ -264,8 +346,7 @@ Mon portfolio
             margin-bottom: 4px;
             text-transform: uppercase;
         }
-
-        .form-champ input, .form-champ select {
+        .form-champ input, .form-champ select, .form-champ textarea {
             width: 100%;
             padding: 8px;
             border: 2px solid var(--text-color);
@@ -299,6 +380,41 @@ Mon portfolio
             border-radius: 4px;
             box-shadow: 2px 2px 0px var(--text-color);
         }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: white;
+            border: 2px solid var(--text-color);
+            padding: 12px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--accent-sage);
+        }
+
+        .liste-commentaires {
+            margin-top: 15px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .comm-item {
+            background: white;
+            border: 1.5px solid var(--text-color);
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .comm-auteur { font-weight: bold; font-size: 0.8rem; margin-bottom: 2px; }
+        .comm-actions { display: flex; gap: 6px; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -308,33 +424,40 @@ Mon portfolio
             <h1>Atelier Mixed Media</h1>
             <p>Galerie d'affiches, créations IA & collages</p>
         </div>
-        <button class="btn-toggle-edit" id="toggleEditBtn" onclick="toggleModeEdition()">Mode Édition : OFF</button>
+        <div class="header-actions">
+            <button class="btn-header" style="background-color: var(--accent-sand);" id="btnAdminPanneau" onclick="ouvrirStats()">📊 Stats & Modération</button>
+            <button class="btn-header" id="toggleEditBtn" onclick="toggleModeEdition()">Mode Édition : OFF</button>
+        </div>
     </header>
 
-    <main class="grid-affiches" id="galerieAffiches">
-        <!-- Les affiches seront générées dynamiquement via JS -->
-    </main>
+    <main class="grid-affiches" id="galerieAffiches"></main>
 
-    <!-- Bouton d'ajout flottant -->
+    <!-- Pied de page avec Copyright -->
+    <footer>
+        © Tous droits réservés à Louise Émilie Schreiber
+    </footer>
+
+    <!-- Bouton Ajouter Affiche Flottant -->
     <button class="btn-ajouter-affiche" onclick="ouvrirModalAjout()" title="Créer une nouvelle affiche">+</button>
 
-    <!-- Modal Formulaire -->
+    <!-- Modal Formulaire Affiche -->
     <div class="modal-overlay" id="modalForm">
         <div class="modal-fenetre">
             <h2 class="modal-titre" id="modalTitreText">Nouvelle Affiche</h2>
             <form id="afficheForm" onsubmit="sauvegarderAffiche(event)">
                 <input type="hidden" id="afficheId">
-                
                 <div class="form-champ">
                     <label for="titreInput">Titre de l'affiche</label>
                     <input type="text" id="titreInput" required placeholder="Ex: Composition géométrique n°4">
                 </div>
-
+                <div class="form-champ">
+                    <label for="urlInput">Lien Web / Réseau Social (URL)</label>
+                    <input type="url" id="urlInput" placeholder="https://instagram.com/..., https://pinterest.com/...">
+                </div>
                 <div class="form-champ">
                     <label for="badgeInput">Type de contenu (Badge)</label>
-                    <input type="text" id="badgeInput" required placeholder="Ex: Mixed Media, Visuel IA, Article...">
+                    <input type="text" id="badgeInput" required placeholder="Ex: Instagram, Pinterest, Article...">
                 </div>
-
                 <div class="form-champ">
                     <label for="tailleSelect">Format de l'affiche</label>
                     <select id="tailleSelect">
@@ -343,7 +466,6 @@ Mon portfolio
                         <option value="h-grande">Grande hauteur</option>
                     </select>
                 </div>
-
                 <div class="form-champ">
                     <label for="couleurSelect">Couleur d'accentuation</label>
                     <select id="couleurSelect">
@@ -353,7 +475,6 @@ Mon portfolio
                         <option value="var(--accent-blue)">Bleu Poudré</option>
                     </select>
                 </div>
-
                 <div class="form-champ">
                     <label for="formeSelect">Forme du cadre</label>
                     <select id="formeSelect">
@@ -363,7 +484,6 @@ Mon portfolio
                         <option value="shape-polaroid">Format Polaroid</option>
                     </select>
                 </div>
-
                 <div class="form-champ">
                     <label for="textureSelect">Texture de surface</label>
                     <select id="textureSelect">
@@ -373,158 +493,102 @@ Mon portfolio
                         <option value="texture-lisse">Lisse / Sans texture</option>
                     </select>
                 </div>
-
                 <div class="modal-boutons">
-                    <button type="button" class="btn-secondaire" onclick="fermerModal()">Annuler</button>
-                    <button type="submit" class="btn-primaire">Enregistrer l'affiche</button>
+                    <button type="button" class="btn-secondaire" onclick="fermerModal('modalForm')">Annuler</button>
+                    <button type="submit" class="btn-primaire">Enregistrer</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Modal Commentaires -->
+    <div class="modal-overlay" id="modalCommentaires">
+        <div class="modal-fenetre">
+            <h2 class="modal-titre">Commentaires</h2>
+            <div id="listeCommModal" class="liste-commentaires"></div>
+            <form onsubmit="ajouterCommentaire(event)" style="margin-top: 15px;">
+                <input type="hidden" id="commAfficheId">
+                <div class="form-champ">
+                    <label>Votre Nom</label>
+                    <input type="text" id="commNom" required placeholder="Votre prénom ou pseudo">
+                </div>
+                <div class="form-champ">
+                    <label>Votre Commentaire (Liens interdits)</label>
+                    <textarea id="commTexte" rows="3" required placeholder="Laissez un mot doux..."></textarea>
+                </div>
+                <div class="modal-boutons">
+                    <button type="button" class="btn-secondaire" onclick="fermerModal('modalCommentaires')">Fermer</button>
+                    <button type="submit" class="btn-primaire">Envoyer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Stats & Modération -->
+    <div class="modal-overlay" id="modalStats">
+        <div class="modal-fenetre">
+            <h2 class="modal-titre">Statistiques & Modération</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="statVues">0</div>
+                    <small>Visites Totales</small>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statAffiches">0</div>
+                    <small>Affiches</small>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statLikes">0</div>
+                    <small>Empreintes (J'aime)</small>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statClics">0</div>
+                    <small>Clics sur liens</small>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.1rem; margin-bottom: 10px;">Modération des commentaires</h3>
+            <div id="moderationListe" class="liste-commentaires"></div>
+
+            <div class="modal-boutons">
+                <button type="button" class="btn-secondaire" onclick="fermerModal('modalStats')">Fermer</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Données initiales des affiches
         const affichesInitiales = [
             {
                 id: 1,
                 titre: "Exploration des formes géométriques",
-                badge: "Mixed Media",
+                url: "https://instagram.com",
+                badge: "Instagram",
                 taille: "h-moyenne",
                 couleur: "var(--accent-sage)",
                 forme: "shape-asymetrique",
-                texture: "texture-papier"
+                texture: "texture-papier",
+                likes: 5,
+                clics: 2
             },
             {
                 id: 2,
                 titre: "Réflexion sur l'art génératif",
-                badge: "Article",
+                url: "https://pinterest.com",
+                badge: "Pinterest",
                 taille: "h-grande",
                 couleur: "var(--accent-rose)",
                 forme: "shape-droite",
-                texture: "texture-kraft"
-            },
-            {
-                id: 3,
-                titre: "Superposition d'encres et aplats",
-                badge: "Visuel IA",
-                taille: "h-petite",
-                couleur: "var(--accent-blue)",
-                forme: "shape-organique",
-                texture: "texture-grain"
+                texture: "texture-kraft",
+                likes: 8,
+                clics: 4
             }
         ];
 
         let affiches = JSON.parse(localStorage.getItem('affichesPortfolio')) || affichesInitiales;
-        let modeEdition = false;
+        let commentaires = JSON.parse(localStorage.getItem('commentairesPortfolio')) || [];
+        let statsVues = parseInt(localStorage.getItem('statsVues') || '1') + 1;
+        let m
 
-        function enregistrerLocalement() {
-            localStorage.setItem('affichesPortfolio', JSON.stringify(affiches));
-        }
+                                                                                
 
-        function toggleModeEdition() {
-            modeEdition = !modeEdition;
-            const btn = document.getElementById('toggleEditBtn');
-            const body = document.body;
-
-            if (modeEdition) {
-                btn.textContent = "Mode Édition : ON";
-                btn.style.backgroundColor = "var(--accent-rose)";
-                body.classList.add('mode-edition-actif');
-            } else {
-                btn.textContent = "Mode Édition : OFF";
-                btn.style.backgroundColor = "var(--accent-sage)";
-                body.classList.remove('mode-edition-actif');
-            }
-        }
-
-        function afficherAffiches() {
-            const conteneur = document.getElementById('galerieAffiches');
-            conteneur.innerHTML = '';
-
-            affiches.forEach(a => {
-                const el = document.createElement('article');
-                el.className = `affiche ${a.forme} ${a.texture}`;
-                
-                el.innerHTML = `
-                    <div class="affiche-actions">
-                        <button class="btn-action" onclick="editerAffiche(${a.id})">Éditer</button>
-                        <button class="btn-action" style="color: #c0392b;" onclick="supprimerAffiche(${a.id})">✕</button>
-                    </div>
-                    <div class="affiche-visuel ${a.taille}" style="background-color: ${a.couleur}">
-                        <span>${a.titre}</span>
-                    </div>
-                    <div class="affiche-corps">
-                        <h3 class="affiche-titre">${a.titre}</h3>
-                        <span class="affiche-badge" style="background-color: ${a.couleur}">${a.badge}</span>
-                    </div>
-                `;
-                conteneur.appendChild(el);
-            });
-        }
-
-        function ouvrirModalAjout() {
-            document.getElementById('afficheForm').reset();
-            document.getElementById('afficheId').value = '';
-            document.getElementById('modalTitreText').textContent = 'Nouvelle Affiche';
-            document.getElementById('modalForm').style.display = 'flex';
-        }
-
-        function editerAffiche(id) {
-            const a = affiches.find(item => item.id === id);
-            if (!a) return;
-
-            document.getElementById('afficheId').value = a.id;
-            document.getElementById('titreInput').value = a.titre;
-            document.getElementById('badgeInput').value = a.badge;
-            document.getElementById('tailleSelect').value = a.taille;
-            document.getElementById('couleurSelect').value = a.couleur;
-            document.getElementById('formeSelect').value = a.forme;
-            document.getElementById('textureSelect').value = a.texture;
-
-            document.getElementById('modalTitreText').textContent = 'Modifier l\'Affiche';
-            document.getElementById('modalForm').style.display = 'flex';
-        }
-
-        function fermerModal() {
-            document.getElementById('modalForm').style.display = 'none';
-        }
-
-        function sauvegarderAffiche(e) {
-            e.preventDefault();
-            const id = document.getElementById('afficheId').value;
             
-            const nouvelleAffiche = {
-                id: id ? parseInt(id) : Date.now(),
-                titre: document.getElementById('titreInput').value,
-                badge: document.getElementById('badgeInput').value,
-                taille: document.getElementById('tailleSelect').value,
-                couleur: document.getElementById('couleurSelect').value,
-                forme: document.getElementById('formeSelect').value,
-                texture: document.getElementById('textureSelect').value
-            };
-
-            if (id) {
-                const index = affiches.findIndex(item => item.id === parseInt(id));
-                affiches[index] = nouvelleAffiche;
-            } else {
-                affiches.push(nouvelleAffiche);
-            }
-
-            enregistrerLocalement();
-            afficherAffiches();
-            fermerModal();
-        }
-
-        function supprimerAffiche(id) {
-            if (confirm("Voulez-vous vraiment supprimer cette affiche ?")) {
-                affiches = affiches.filter(item => item.id !== id);
-                enregistrerLocalement();
-                afficherAffiches();
-            }
-        }
-
-        // Initialisation au chargement
-        afficherAffiches();
-    </script>
-</body>
-</html>
