@@ -2,6 +2,7 @@
 
 Portfolio
 
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -224,19 +225,9 @@ Portfolio
             border-radius: 4px;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             box-shadow: 2px 2px 0px var(--text-color);
             transition: all 0.15s ease;
-        }
-
-        .btn-interact svg {
-            width: 15px;
-            height: 15px;
-            fill: none;
-            stroke: var(--text-color);
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
         }
 
         .btn-interact:hover {
@@ -587,8 +578,14 @@ Portfolio
         let affiches = JSON.parse(localStorage.getItem('affichesPortfolio')) || affichesInitiales;
         let commentaires = JSON.parse(localStorage.getItem('commentairesPortfolio')) || [];
         let statsVues = parseInt(localStorage.getItem('statsVues') || '1') + 1;
-        let m
+        let modeEdition = false;
 
-                                                                                
+        localStorage.setItem('statsVues', statsVues);
+
+        function sauvegarderDonnees() {
+            localStorage.setItem('affichesPortfolio', JSON.stringify(affiches));
+            localStorage.setItem('commentairesPortfolio'        
+
+                                                                                        
 
             
