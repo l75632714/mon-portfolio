@@ -1,5 +1,3 @@
-Voici le code mis à jour. L'option "Buy me a drink" a été ajoutée directement dans l'en-tête (header) de votre site, juste à côté des autres boutons d'administration, avec un style assorti et une couleur chaleureuse.
-Vous pouvez modifier le lien dans le code (href="[https://buymeacoffee.com/votre_lien](https://buymeacoffee.com/votre_lien)") pour y mettre votre propre lien de soutien (Buy Me a Coffee, Tipeee, PayPal, etc.).
 <!DOCTYPE html>
 <html lang="fr">
 <head>
