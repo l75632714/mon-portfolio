@@ -1,8 +1,5 @@
-# Portfolio
-
-Portfolio
-
-
+Voici le code mis à jour. L'option "Buy me a drink" a été ajoutée directement dans l'en-tête (header) de votre site, juste à côté des autres boutons d'administration, avec un style assorti et une couleur chaleureuse.
+Vous pouvez modifier le lien dans le code (href="[https://buymeacoffee.com/votre_lien](https://buymeacoffee.com/votre_lien)") pour y mettre votre propre lien de soutien (Buy Me a Coffee, Tipeee, PayPal, etc.).
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -65,6 +62,7 @@ Portfolio
         .header-actions {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .btn-header {
@@ -77,6 +75,11 @@ Portfolio
             cursor: pointer;
             box-shadow: 3px 3px 0px var(--text-color);
             transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
         }
 
         .btn-header:hover {
@@ -157,6 +160,13 @@ Portfolio
             cursor: pointer;
         }
 
+        .affiche-visuel span {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px 12px;
+            border-radius: 4px;
+            backdrop-filter: blur(2px);
+        }
+
         .h-petite { height: 180px; }
         .h-moyenne { height: 260px; }
         .h-grande { height: 350px; }
@@ -225,9 +235,19 @@ Portfolio
             border-radius: 4px;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             box-shadow: 2px 2px 0px var(--text-color);
             transition: all 0.15s ease;
+        }
+
+        .btn-interact svg {
+            width: 15px;
+            height: 15px;
+            fill: none;
+            stroke: var(--text-color);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .btn-interact:hover {
@@ -260,6 +280,39 @@ Portfolio
             box-shadow: 2px 2px 0px var(--text-color);
         }
 
+        /* Module de recherche Giphy */
+        .giphy-search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .giphy-results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 8px;
+            border: 1px solid var(--text-color);
+            padding: 6px;
+            border-radius: 4px;
+            background: white;
+        }
+
+        .giphy-results-grid img {
+            width: 100%;
+            height: 70px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 3px;
+        }
+
+        .giphy-results-grid img:hover {
+            border-color: var(--accent-sage);
+        }
+
         /* Bouton Ajouter Affiche Flottant */
         .btn-ajouter-affiche {
             position: fixed;
@@ -285,7 +338,7 @@ Portfolio
             display: flex;
         }
 
-        /* Pied de page (Footer Copyright) */
+        /* Pied de page */
         footer {
             max-width: 1200px;
             width: 100%;
@@ -416,6 +469,10 @@ Portfolio
             <p>Galerie d'affiches, créations IA & collages</p>
         </div>
         <div class="header-actions">
+            <!-- Bouton Buy me a drink -->
+            <a href="https://buymeacoffee.com/votre_lien" target="_blank" class="btn-header" style="background-color: var(--accent-rose);" title="Offrir un verre">
+                ☕ Buy me a drink
+            </a>
             <button class="btn-header" style="background-color: var(--accent-sand);" id="btnAdminPanneau" onclick="ouvrirStats()">📊 Stats & Modération</button>
             <button class="btn-header" id="toggleEditBtn" onclick="toggleModeEdition()">Mode Édition : OFF</button>
         </div>
@@ -423,7 +480,7 @@ Portfolio
 
     <main class="grid-affiches" id="galerieAffiches"></main>
 
-    <!-- Pied de page avec Copyright -->
+    <!-- Pied de page -->
     <footer>
         © Tous droits réservés à Louise Émilie Schreiber
     </footer>
@@ -437,18 +494,38 @@ Portfolio
             <h2 class="modal-titre" id="modalTitreText">Nouvelle Affiche</h2>
             <form id="afficheForm" onsubmit="sauvegarderAffiche(event)">
                 <input type="hidden" id="afficheId">
+                
                 <div class="form-champ">
                     <label for="titreInput">Titre de l'affiche</label>
                     <input type="text" id="titreInput" required placeholder="Ex: Composition géométrique n°4">
                 </div>
+
+                <!-- Option Image / GIF -->
                 <div class="form-champ">
-                    <label for="urlInput">Lien Web / Réseau Social (URL)</label>
+                    <label for="bgImageInput">URL de l'image ou du GIF</label>
+                    <input type="url" id="bgImageInput" placeholder="https://... (.jpg, .png, .gif)">
+                </div>
+
+                <!-- Module de recherche Giphy intégré -->
+                <div class="form-champ">
+                    <label>Rechercher un GIF sur Giphy</label>
+                    <div class="giphy-search-box">
+                        <input type="text" id="giphyQuery" placeholder="Ex: art, collage, vintage...">
+                        <button type="button" class="btn-secondaire" onclick="rechercherGiphy()">Chercher</button>
+                    </div>
+                    <div id="giphyResults" class="giphy-results-grid" style="display: none;"></div>
+                </div>
+
+                <div class="form-champ">
+                    <label for="urlInput">Lien Web externe / Réseau Social (Cliquable)</label>
                     <input type="url" id="urlInput" placeholder="https://instagram.com/..., https://pinterest.com/...">
                 </div>
+
                 <div class="form-champ">
                     <label for="badgeInput">Type de contenu (Badge)</label>
-                    <input type="text" id="badgeInput" required placeholder="Ex: Instagram, Pinterest, Article...">
+                    <input type="text" id="badgeInput" required placeholder="Ex: Instagram, GIF, Article...">
                 </div>
+
                 <div class="form-champ">
                     <label for="tailleSelect">Format de l'affiche</label>
                     <select id="tailleSelect">
@@ -457,8 +534,9 @@ Portfolio
                         <option value="h-grande">Grande hauteur</option>
                     </select>
                 </div>
+
                 <div class="form-champ">
-                    <label for="couleurSelect">Couleur d'accentuation</label>
+                    <label for="couleurSelect">Couleur de fond (si pas d'image/GIF)</label>
                     <select id="couleurSelect">
                         <option value="var(--accent-sage)">Vert Sauge</option>
                         <option value="var(--accent-sand)">Sable Chaud</option>
@@ -466,6 +544,7 @@ Portfolio
                         <option value="var(--accent-blue)">Bleu Poudré</option>
                     </select>
                 </div>
+
                 <div class="form-champ">
                     <label for="formeSelect">Forme du cadre</label>
                     <select id="formeSelect">
@@ -475,6 +554,7 @@ Portfolio
                         <option value="shape-polaroid">Format Polaroid</option>
                     </select>
                 </div>
+
                 <div class="form-champ">
                     <label for="textureSelect">Texture de surface</label>
                     <select id="textureSelect">
@@ -484,6 +564,7 @@ Portfolio
                         <option value="texture-lisse">Lisse / Sans texture</option>
                     </select>
                 </div>
+
                 <div class="modal-boutons">
                     <button type="button" class="btn-secondaire" onclick="fermerModal('modalForm')">Annuler</button>
                     <button type="submit" class="btn-primaire">Enregistrer</button>
@@ -552,6 +633,7 @@ Portfolio
             {
                 id: 1,
                 titre: "Exploration des formes géométriques",
+                bgImage: "",
                 url: "https://instagram.com",
                 badge: "Instagram",
                 taille: "h-moyenne",
@@ -564,6 +646,7 @@ Portfolio
             {
                 id: 2,
                 titre: "Réflexion sur l'art génératif",
+                bgImage: "",
                 url: "https://pinterest.com",
                 badge: "Pinterest",
                 taille: "h-grande",
@@ -584,8 +667,309 @@ Portfolio
 
         function sauvegarderDonnees() {
             localStorage.setItem('affichesPortfolio', JSON.stringify(affiches));
-            localStorage.setItem('commentairesPortfolio'        
+            localStorage.setItem('commentairesPortfolio', JSON.stringify(commentaires));
+        }
 
-                                                                                        
+        function toggleModeEdition() {
+            modeEdition = !modeEdition;
+            const btn = document.getElementById('toggleEditBtn');
+            if (modeEdition) {
+                btn.textContent = "Mode Édition : ON";
+                btn.style.backgroundColor = "var(--accent-rose)";
+                document.body.classList.add('mode-edition-actif');
+            } else {
+                btn.textContent = "Mode Édition : OFF";
+                btn.style.backgroundColor = "var(--accent-sage)";
+                document.body.classList.remove('mode-edition-actif');
+            }
+        }
 
+        function afficherAffiches() {
+            const conteneur = document.getElementById('galerieAffiches');
+            conteneur.innerHTML = '';
+
+            affiches.forEach(a => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'affiche-wrapper';
+
+                const el = document.createElement('article');
+                el.className = `affiche ${a.forme} ${a.texture}`;
+                
+                const iconLien = a.url ? '<span class="affiche-link-icon" title="Ouvrir le lien">↗</span>' : '';
+                const nbComms = commentaires.filter(c => c.afficheId === a.id && c.statut === 'approuve').length;
+
+                const bgStyle = a.bgImage 
+                    ? `background-image: url('${a.bgImage}'); background-size: cover; background-position: center;` 
+                    : `background-color: ${a.couleur};`;
+
+                const svgEmpreinte = `
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2a10 10 0 0 0-10 10c0 3 1.2 5.8 3.2 7.8" />
+                        <path d="M12 6a6 6 0 0 0-6 6c0 1.8.7 3.5 1.9 4.8" />
+                        <path d="M12 10a2 2 0 0 0-2 2c0 .6.2 1.2.6 1.6" />
+                        <path d="M12 14a2 2 0 0 1 2-2" />
+                        <path d="M15 12a3 3 0 0 0-3-3" />
+                        <path d="M18 12a6 6 0 0 0-6-6" />
+                        <path d="M21 12a9 9 0 0 0-9-9" />
+                        <path d="M12 18a6 6 0 0 0 5.2-3" />
+                        <path d="M12 22a10 10 0 0 0 8.8-5.2" />
+                    </svg>`;
+
+                el.innerHTML = `
+                    <div class="affiche-actions">
+                        <button class="btn-action" onclick="editerAffiche(event, ${a.id})">Éditer</button>
+                        <button class="btn-action" style="color: #c0392b;" onclick="supprimerAffiche(event, ${a.id})">✕</button>
+                    </div>
+                    <div class="affiche-visuel ${a.taille}" style="${bgStyle}" onclick="ouvrirLien(${a.id}, '${a.url}')">
+                        <span>${a.titre}</span>
+                        ${iconLien}
+                    </div>
+                    <div class="affiche-corps">
+                        <h3 class="affiche-titre">${a.titre}</h3>
+                        <div class="affiche-footer">
+                            <span class="affiche-badge" style="background-color: ${a.couleur}">${a.badge}</span>
+                            <div class="affiche-interactions">
+                                <button class="btn-interact btn-like" onclick="likerAffiche(${a.id})" title="J'aime (Empreinte)">
+                                    ${svgEmpreinte} <span>${a.likes || 0}</span>
+                                </button>
+                                <button class="btn-interact" onclick="partagerAffiche('${a.titre}', '${a.url}')" title="Partager">
+                                    ◎
+                                </button>
+                                <button class="btn-interact" onclick="ouvrirCommentaires(${a.id})" title="Commentaires">
+                                    💬 <span>${nbComms}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                wrapper.appendChild(el);
+                conteneur.appendChild(wrapper);
+            });
+        }
+
+        async function rechercherGiphy() {
+            const query = document.getElementById('giphyQuery').value;
+            const grid = document.getElementById('giphyResults');
+            if (!query) return;
+
+            grid.style.display = 'grid';
+            grid.innerHTML = 'Chargement...';
+
+            try {
+                const apiKey = 'dc6zaTOxFJmzC';
+                const res = await fetch(`https://api.giphy.com/v1/gifs/search?q=${encodeURIComponent(query)}&limit=6&api_key=${apiKey}`);
+                const data = await res.json();
+
+                grid.innerHTML = '';
+                if (data.data && data.data.length > 0) {
+                    data.data.forEach(gif => {
+                        const img = document.createElement('img');
+                        img.src = gif.images.fixed_height_small.url;
+                        img.alt = gif.title;
+                        img.onclick = () => {
+                            document.getElementById('bgImageInput').value = gif.images.original.url;
+                            grid.style.display = 'none';
+                        };
+                        grid.appendChild(img);
+                    });
+                } else {
+                    grid.innerHTML = 'Aucun GIF trouvé.';
+                }
+            } catch (err) {
+                grid.innerHTML = 'Erreur lors de la recherche Giphy.';
+            }
+        }
+
+        function likerAffiche(id) {
+            const a = affiches.find(item => item.id === id);
+            if (a) {
+                a.likes = (a.likes || 0) + 1;
+                sauvegarderDonnees();
+                afficherAffiches();
+            }
+        }
+
+        function partagerAffiche(titre, url) {
+            const lienPartage = url || window.location.href;
+            if (navigator.share) {
+                navigator.share({ title: titre, url: lienPartage });
+            } else {
+                navigator.clipboard.writeText(lienPartage);
+                alert("Lien de l'affiche copié dans le presse-papier !");
+            }
+        }
+
+        function ouvrirLien(id, url) {
+            if (!url || modeEdition) return;
+            const a = affiches.find(item => item.id === id);
+            if (a) {
+                a.clics = (a.clics || 0) + 1;
+                sauvegarderDonnees();
+            }
+            window.open(url, '_blank');
+        }
+
+        function verifierLiensIntegrees(texte) {
+            const regexLien = /(https?:\/\/|www\.|[a-zA-Z0-9-]+\.[a-zA-Z]{2,})/i;
+            return regexLien.test(texte);
+        }
+
+        function ajouterCommentaire(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('commAfficheId').value);
+            const nom = document.getElementById('commNom').value;
+            const texte = document.getElementById('commTexte').value;
+
+            if (verifierLiensIntegrees(texte) || verifierLiensIntegrees(nom)) {
+                alert("Désolé, les liens web ne sont pas autorisés dans les commentaires.");
+                return;
+            }
+
+            commentaires.push({
+                id: Date.now(),
+                afficheId: id,
+                auteur: nom,
+                texte: texte,
+                statut: 'en_attente'
+            });
+
+            sauvegarderDonnees();
+            alert("Commentaire envoyé ! Il apparaîtra après modération.");
+            document.getElementById('commTexte').value = '';
+            fermerModal('modalCommentaires');
+        }
+
+        function ouvrirCommentaires(id) {
+            document.getElementById('commAfficheId').value = id;
+            const commsAffiche = commentaires.filter(c => c.afficheId === id && c.statut === 'approuve');
+            const listeEl = document.getElementById('listeCommModal');
             
+            listeEl.innerHTML = commsAffiche.length ? '' : '<p style="opacity: 0.7;">Aucun commentaire pour l\'instant.</p>';
+            commsAffiche.forEach(c => {
+                listeEl.innerHTML += `
+                    <div class="comm-item">
+                        <div class="comm-auteur">${c.auteur}</div>
+                        <div>${c.texte}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('modalCommentaires').style.display = 'flex';
+        }
+
+        function ouvrirStats() {
+            document.getElementById('statVues').textContent = localStorage.getItem('statsVues') || 1;
+            document.getElementById('statAffiches').textContent = affiches.length;
+            document.getElementById('statLikes').textContent = affiches.reduce((acc, a) => acc + (a.likes || 0), 0);
+            document.getElementById('statClics').textContent = affiches.reduce((acc, a) => acc + (a.clics || 0), 0);
+
+            const modEl = document.getElementById('moderationListe');
+            modEl.innerHTML = commentaires.length ? '' : '<p style="opacity: 0.7;">Aucun commentaire à modérer.</p>';
+            
+            commentaires.forEach(c => {
+                modEl.innerHTML += `
+                    <div class="comm-item">
+                        <div class="comm-auteur">${c.auteur} - <small>Statut: ${c.statut}</small></div>
+                        <div>${c.texte}</div>
+                        <div class="comm-actions">
+                            ${c.statut !== 'approuve' ? `<button class="btn-action" onclick="changerStatutComm(${c.id}, 'approuve')">Approuver</button>` : ''}
+                            <button class="btn-action" style="color:red;" onclick="supprimerComm(${c.id})">Supprimer</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('modalStats').style.display = 'flex';
+        }
+
+        function changerStatutComm(id, statut) {
+            const c = commentaires.find(item => item.id === id);
+            if (c) {
+                c.statut = statut;
+                sauvegarderDonnees();
+                ouvrirStats();
+                afficherAffiches();
+            }
+        }
+
+        function supprimerComm(id) {
+            commentaires = commentaires.filter(item => item.id !== id);
+            sauvegarderDonnees();
+            ouvrirStats();
+            afficherAffiches();
+        }
+
+        function ouvrirModalAjout() {
+            document.getElementById('afficheForm').reset();
+            document.getElementById('afficheId').value = '';
+            document.getElementById('giphyResults').style.display = 'none';
+            document.getElementById('modalTitreText').textContent = 'Nouvelle Affiche';
+            document.getElementById('modalForm').style.display = 'flex';
+        }
+
+        function editerAffiche(e, id) {
+            e.stopPropagation();
+            const a = affiches.find(item => item.id === id);
+            if (!a) return;
+
+            document.getElementById('afficheId').value = a.id;
+            document.getElementById('titreInput').value = a.titre;
+            document.getElementById('bgImageInput').value = a.bgImage || '';
+            document.getElementById('urlInput').value = a.url || '';
+            document.getElementById('badgeInput').value = a.badge;
+            document.getElementById('tailleSelect').value = a.taille;
+            document.getElementById('couleurSelect').value = a.couleur;
+            document.getElementById('formeSelect').value = a.forme;
+            document.getElementById('textureSelect').value = a.texture;
+            document.getElementById('giphyResults').style.display = 'none';
+
+            document.getElementById('modalTitreText').textContent = 'Modifier l\'Affiche';
+            document.getElementById('modalForm').style.display = 'flex';
+        }
+
+        function fermerModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function sauvegarderAffiche(e) {
+            e.preventDefault();
+            const id = document.getElementById('afficheId').value;
+            const nouvelleAffiche = {
+                id: id ? parseInt(id) : Date.now(),
+                titre: document.getElementById('titreInput').value,
+                bgImage: document.getElementById('bgImageInput').value,
+                url: document.getElementById('urlInput').value,
+                badge: document.getElementById('badgeInput').value,
+                taille: document.getElementById('tailleSelect').value,
+                couleur: document.getElementById('couleurSelect').value,
+                forme: document.getElementById('formeSelect').value,
+                texture: document.getElementById('textureSelect').value,
+                likes: id ? (affiches.find(a => a.id === parseInt(id))?.likes || 0) : 0,
+                clics: id ? (affiches.find(a => a.id === parseInt(id))?.clics || 0) : 0
+            };
+
+            if (id) {
+                const index = affiches.findIndex(item => item.id === parseInt(id));
+                affiches[index] = nouvelleAffiche;
+            } else {
+                affiches.push(nouvelleAffiche);
+            }
+
+            sauvegarderDonnees();
+            afficherAffiches();
+            fermerModal('modalForm');
+        }
+
+        function supprimerAffiche(e, id) {
+            e.stopPropagation();
+            if (confirm("Supprimer cette affiche ?")) {
+                affiches = affiches.filter(item => item.id !== id);
+                commentaires = commentaires.filter(c => c.afficheId !== id);
+                sauvegarderDonnees();
+                afficherAffiches();
+            }
+        }
+
+        afficherAffiches();
+    </script>
+</body>
+</html>
+
