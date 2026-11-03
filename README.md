@@ -506,10 +506,10 @@
         <div class="header-actions">
             <!-- Bouton Buy me a drink avec texte exact -->
             <a id="buyDrinkBtn" href="https://buymeacoffee.com/votre_lien" target="_blank" class="btn-header" style="background-color: var(--accent-rose);" title="Buy me a drink">
-                ☕ Buy me a drink if you like my art
+                Buy me a drink if you like my art
             </a>
             <!-- Stats & Modération (Visible uniquement en mode édition) -->
-            <button class="btn-header" style="background-color: var(--accent-sand);" id="btnAdminPanneau" onclick="ouvrirStats()">📊 Stats & Modération</button>
+            <button class="btn-header" style="background-color: var(--accent-sand);" id="btnAdminPanneau" onclick="ouvrirStats()"> Stats & Modération</button>
             <button class="btn-header" id="toggleEditBtn" onclick="toggleModeEdition()">Mode Édition : OFF</button>
         </div>
     </header>
