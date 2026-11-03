@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Portfolio Mixed Media - Galerie d'Affiches</title>
+    <title>Louise Émilie Schreiber - Portfolio Mixed Media</title>
+    <!-- Import Google Fonts dynamique -->
+    <link id="googleFontLink" href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #F7F5F0;
@@ -13,6 +15,7 @@
             --accent-rose: #D6A28E;
             --accent-blue: #9FB1C1;
             --card-bg: #FFFFFF;
+            --custom-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         * {
@@ -24,7 +27,7 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--custom-font);
             padding: 40px 20px 20px 20px;
             position: relative;
             min-height: 100vh;
@@ -61,6 +64,7 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .btn-header {
@@ -83,6 +87,14 @@
         .btn-header:hover {
             transform: translate(-2px, -2px);
             box-shadow: 5px 5px 0px var(--text-color);
+        }
+
+        /* Stats masqué par défaut hors mode édition */
+        #btnAdminPanneau {
+            display: none;
+        }
+        .mode-edition-actif #btnAdminPanneau {
+            display: inline-flex;
         }
 
         /* Grille Masonry d'Affiches */
@@ -119,11 +131,13 @@
             box-shadow: 6px 6px 0px var(--text-color);
         }
 
-        /* Formes de cadre */
-        .shape-droite { border-radius: 4px; }
-        .shape-asymetrique { border-radius: 24px 4px 18px 4px; }
-        .shape-organique { border-radius: 40px 15px 35px 20px / 20px 35px 15px 40px; }
-        .shape-polaroid { border-radius: 2px; padding: 12px 12px 0 12px; background: #fff; }
+        /* Formes de cadre & Variations de lignes */
+        .shape-droite { border-radius: 4px; border-style: solid; }
+        .shape-tirets { border-radius: 4px; border-style: dashed; border-width: 3px; }
+        .shape-pointilles { border-radius: 4px; border-style: dotted; border-width: 3px; }
+        .shape-asymetrique { border-radius: 24px 4px 18px 4px; border-style: solid; }
+        .shape-organique { border-radius: 40px 15px 35px 20px / 20px 35px 15px 40px; border-style: solid; }
+        .shape-polaroid { border-radius: 2px; padding: 12px 12px 0 12px; background: #fff; border-style: solid; }
 
         /* Textures */
         .texture-lisse { background-image: none; }
@@ -139,6 +153,13 @@
         }
         .texture-grain {
             background-image: repeating-radial-gradient(circle at 17% 32%, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 1px, transparent 1px, transparent 100px);
+        }
+        .texture-rayures {
+            background-image: repeating-linear-gradient(0deg, rgba(0,0,0,0.03), rgba(0,0,0,0.03) 1px, transparent 1px, transparent 10px);
+        }
+        .texture-carreaux {
+            background-image: linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+            background-size: 15px 15px;
         }
 
         /* Zone visuel de l'affiche */
@@ -348,6 +369,9 @@
             font-weight: 600;
             color: var(--text-color);
             opacity: 0.85;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         /* Modals */
@@ -366,7 +390,7 @@
             border: 2px solid var(--text-color);
             box-shadow: 8px 8px 0px var(--text-color);
             width: 90%;
-            max-width: 550px;
+            max-width: 580px;
             padding: 24px;
             border-radius: 8px;
             max-height: 90vh;
@@ -394,6 +418,19 @@
             border: 2px solid var(--text-color);
             border-radius: 4px;
             font-family: inherit;
+        }
+
+        .color-picker-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .color-picker-row input[type="color"] {
+            width: 50px;
+            height: 40px;
+            padding: 2px;
+            cursor: pointer;
         }
 
         .modal-boutons {
@@ -463,14 +500,15 @@
 
     <header>
         <div class="header-titles">
-            <h1>Atelier Mixed Media</h1>
-            <p>Galerie d'affiches, créations IA & collages</p>
+            <h1 id="headerMainTitle">Atelier Mixed Media</h1>
+            <p id="headerSubTitle">Galerie d'affiches, créations IA & collages</p>
         </div>
         <div class="header-actions">
-            <!-- Bouton Buy me a drink -->
-            <a href="https://buymeacoffee.com/votre_lien" target="_blank" class="btn-header" style="background-color: var(--accent-rose);" title="Offrir un verre">
-                ☕ Buy me a drink
+            <!-- Bouton Buy me a drink avec texte exact -->
+            <a id="buyDrinkBtn" href="https://buymeacoffee.com/votre_lien" target="_blank" class="btn-header" style="background-color: var(--accent-rose);" title="Buy me a drink">
+                ☕ Buy me a drink if you like my art
             </a>
+            <!-- Stats & Modération (Visible uniquement en mode édition) -->
             <button class="btn-header" style="background-color: var(--accent-sand);" id="btnAdminPanneau" onclick="ouvrirStats()">📊 Stats & Modération</button>
             <button class="btn-header" id="toggleEditBtn" onclick="toggleModeEdition()">Mode Édition : OFF</button>
         </div>
@@ -478,9 +516,11 @@
 
     <main class="grid-affiches" id="galerieAffiches"></main>
 
-    <!-- Pied de page -->
+    <!-- Pied de page dynamique (Copyright, Nom, Brand, Année, Disclaimer) -->
     <footer>
-        © Tous droits réservés à Louise Émilie Schreiber
+        <div id="footerCopyright">© Tous droits réservés à Louise Émilie Schreiber</div>
+        <div id="footerBrandDetails" style="font-size: 0.8rem; opacity: 0.8;"></div>
+        <div id="footerDisclaimer" style="font-size: 0.75rem; opacity: 0.7;"></div>
     </footer>
 
     <!-- Bouton Ajouter Affiche Flottant -->
@@ -533,20 +573,31 @@
                     </select>
                 </div>
 
+                                <!-- Palette chromatique complète & Harmonisation -->
                 <div class="form-champ">
-                    <label for="couleurSelect">Couleur de fond (si pas d'image/GIF)</label>
-                    <select id="couleurSelect">
-                        <option value="var(--accent-sage)">Vert Sauge</option>
-                        <option value="var(--accent-sand)">Sable Chaud</option>
-                        <option value="var(--accent-rose)">Rose Poudré</option>
-                        <option value="var(--accent-blue)">Bleu Poudré</option>
+                    <label for="couleurSelect">Couleur de fond (Palette libre)</label>
+                    <div class="color-picker-row">
+                        <input type="color" id="couleurPicker" value="#8A9A86" oninput="document.getElementById('couleurSelect').value = this.value;">
+                        <input type="text" id="couleurSelect" value="#8A9A86" placeholder="#HEX ou nom de couleur">
+                    </div>
+                </div>
+                <div class="form-champ">
+                    <label for="harmonieSelect">Harmonie chromatique automatique</label>
+                    <select id="harmonieSelect" onchange="appliquerHarmonie(this.value)">
+                        <option value="">-- Choisir une harmonie --</option>
+                        <option value="complementaire">2 Couleurs (Complémentaire)</option>
+                        <option value="triadique">3 Couleurs (Triadique)</option>
+                        <option value="tetradique">4 Couleurs (Tétradique)</option>
                     </select>
+                    <small id="harmonieDetails" style="display:block; margin-top:4px; font-size:0.75rem; opacity:0.8;"></small>
                 </div>
 
                 <div class="form-champ">
-                    <label for="formeSelect">Forme du cadre</label>
+                    <label for="formeSelect">Forme du cadre et variations de lignes</label>
                     <select id="formeSelect">
-                        <option value="shape-droite">Lignes droites nettes</option>
+                        <option value="shape-droite">Lignes droites nettes (Solide)</option>
+                        <option value="shape-tirets">Lignes discontinues (Tirets)</option>
+                        <option value="shape-pointilles">Lignes discontinues (Pointillés)</option>
                         <option value="shape-asymetrique">Coins asymétriques</option>
                         <option value="shape-organique">Forme organique (Blob)</option>
                         <option value="shape-polaroid">Format Polaroid</option>
@@ -559,8 +610,64 @@
                         <option value="texture-papier">Effet Papier Grainé</option>
                         <option value="texture-kraft">Effet Papier Kraft</option>
                         <option value="texture-grain">Effet Grain Photo</option>
+                        <option value="texture-rayures">Effet Rayures fines</option>
+                        <option value="texture-carreaux">Effet Carreaux / Grille</option>
                         <option value="texture-lisse">Lisse / Sans texture</option>
                     </select>
+                </div>
+
+                <!-- Configuration globale du site (Polices, Copyrights, Marques, Année, Disclaimer) dans l'éditeur -->
+                <hr style="margin: 20px 0; border: 1px solid var(--text-color);">
+                <h3 style="font-size: 1rem; margin-bottom: 10px;">Paramètres globaux du Portfolio</h3>
+
+                <div class="form-champ">
+                    <label for="googleFontSelect">Police Google Fonts</label>
+                    <select id="googleFontSelect" onchange="changerPoliceGoogle(this.value)">
+                        <option value="Segoe UI">Segoe UI (Défaut)</option>
+                        <option value="Playfair Display">Playfair Display</option>
+                        <option value="Cormorant Garamond">Cormorant Garamond</option>
+                        <option value="Montserrat">Montserrat</option>
+                        <option value="Oswald">Oswald</option>
+                        <option value="Cinzel">Cinzel</option>
+                        <option value="Raleway">Raleway</option>
+                        <option value="Quicksand">Quicksand</option>
+                        <option value="Space Mono">Space Mono</option>
+                    </select>
+                </div>
+
+                <div class="form-champ">
+                    <label for="copyrightTypeSelect">Type de Copyright (Mondial)</label>
+                    <select id="copyrightTypeSelect">
+                        <option value="© Tous droits réservés">© Tous droits réservés (France / International)</option>
+                        <option value="© All rights reserved">© All rights reserved (Anglophone)</option>
+                        <option value="Copyright ©">Copyright © Standard</option>
+                        <option value="Public Domain / CC0">Domaine Public / CC0</option>
+                    </select>
+                </div>
+
+                <div class="form-champ">
+                    <label for="ownerNameInput">Nom du Propriétaire (Owner Name)</label>
+                    <input type="text" id="ownerNameInput" value="Louise Émilie Schreiber">
+                </div>
+
+                <div class="form-champ">
+                    <label for="companyNameInput">Nom de la Société (Company Name)</label>
+                    <input type="text" id="companyNameInput" placeholder="Ex: Schreiber Studio">
+                </div>
+
+                <div class="form-champ">
+                    <label for="brandNameInput">Nom de la Marque (Brand Name)</label>
+                    <input type="text" id="brandNameInput" placeholder="Ex: Mixed Media Art">
+                </div>
+
+                <div class="form-champ">
+                    <label for="yearInput">Année (Year)</label>
+                    <input type="text" id="yearInput" value="2026">
+                </div>
+
+                <div class="form-champ">
+                    <label for="disclaimerInput">Disclaimer / Mentions légales</label>
+                    <textarea id="disclaimerInput" rows="2" placeholder="Ex: Toute reproduction interdite sans autorisation préalable."></textarea>
                 </div>
 
                 <div class="modal-boutons">
@@ -594,7 +701,7 @@
         </div>
     </div>
 
-    <!-- Modal Stats & Modération -->
+        <!-- Modal Stats & Modération -->
     <div class="modal-overlay" id="modalStats">
         <div class="modal-fenetre">
             <h2 class="modal-titre">Statistiques & Modération</h2>
@@ -635,7 +742,7 @@
                 url: "https://instagram.com",
                 badge: "Instagram",
                 taille: "h-moyenne",
-                couleur: "var(--accent-sage)",
+                couleur: "#8A9A86",
                 forme: "shape-asymetrique",
                 texture: "texture-papier",
                 likes: 5,
@@ -648,8 +755,8 @@
                 url: "https://pinterest.com",
                 badge: "Pinterest",
                 taille: "h-grande",
-                couleur: "var(--accent-rose)",
-                forme: "shape-droite",
+                couleur: "#D6A28E",
+                forme: "shape-tirets",
                 texture: "texture-kraft",
                 likes: 8,
                 clics: 4
@@ -661,301 +768,36 @@
         let statsVues = parseInt(localStorage.getItem('statsVues') || '1') + 1;
         let modeEdition = false;
 
+        let configGlobal = JSON.parse(localStorage.getItem('configPortfolio')) || {
+            font: "Segoe UI",
+            copyrightType: "© Tous droits réservés",
+            ownerName: "Louise Émilie Schreiber",
+            companyName: "",
+            brandName: "",
+            year: "2026",
+            disclaimer: ""
+        };
+
         localStorage.setItem('statsVues', statsVues);
 
-        function sauvegarderDonnees() {
-            localStorage.setItem('affichesPortfolio', JSON.stringify(affiches));
-            localStorage.setItem('commentairesPortfolio', JSON.stringify(commentaires));
+                function appliquerConfigGlobale() {
+            // Police
+            const fontName = configGlobal.font || "Segoe UI";
+            document.getElementById('googleFontLink').href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@400;600;700&display=swap`;
+            document.documentElement.style.setProperty('--custom-font', `'${fontName}', sans-serif`);
+
+            // Footer
+            const cpType = configGlobal.copyrightType || "© Tous droits réservés";
+            const owner = configGlobal.ownerName || "";
+            const year = configGlobal.year || "2026";
+            document.getElementById('footerCopyright').textContent = `${cpType} ${year} ${owner ? 'à ' + owner : ''}`;
+
+            let brandText = [];
+            if(configGlobal.companyName) brandText.push(`Société : ${configGlobal.companyName}`);
+            if(configGlobal.brandName) brandText.push(`Marque : ${configGlobal.brandName}`);
+            document.getElementById('footerBrandDetails').textContent = brandText.join(' | ');
+            document.getElementById('footerDisclaimer').textContent = configGlobal.disclaimer || '';
         }
-
-        function toggleModeEdition() {
-            modeEdition = !modeEdition;
-            const btn = document.getElementById('toggleEditBtn');
-            if (modeEdition) {
-                btn.textContent = "Mode Édition : ON";
-                btn.style.backgroundColor = "var(--accent-rose)";
-                document.body.classList.add('mode-edition-actif');
-            } else {
-                btn.textContent = "Mode Édition : OFF";
-                btn.style.backgroundColor = "var(--accent-sage)";
-                document.body.classList.remove('mode-edition-actif');
-            }
-        }
-
-        function afficherAffiches() {
-            const conteneur = document.getElementById('galerieAffiches');
-            conteneur.innerHTML = '';
-
-            affiches.forEach(a => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'affiche-wrapper';
-
-                const el = document.createElement('article');
-                el.className = `affiche ${a.forme} ${a.texture}`;
-                
-                const iconLien = a.url ? '<span class="affiche-link-icon" title="Ouvrir le lien">↗</span>' : '';
-                const nbComms = commentaires.filter(c => c.afficheId === a.id && c.statut === 'approuve').length;
-
-                const bgStyle = a.bgImage 
-                    ? `background-image: url('${a.bgImage}'); background-size: cover; background-position: center;` 
-                    : `background-color: ${a.couleur};`;
-
-                const svgEmpreinte = `
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 2a10 10 0 0 0-10 10c0 3 1.2 5.8 3.2 7.8" />
-                        <path d="M12 6a6 6 0 0 0-6 6c0 1.8.7 3.5 1.9 4.8" />
-                        <path d="M12 10a2 2 0 0 0-2 2c0 .6.2 1.2.6 1.6" />
-                        <path d="M12 14a2 2 0 0 1 2-2" />
-                        <path d="M15 12a3 3 0 0 0-3-3" />
-                        <path d="M18 12a6 6 0 0 0-6-6" />
-                        <path d="M21 12a9 9 0 0 0-9-9" />
-                        <path d="M12 18a6 6 0 0 0 5.2-3" />
-                        <path d="M12 22a10 10 0 0 0 8.8-5.2" />
-                    </svg>`;
-
-                el.innerHTML = `
-                    <div class="affiche-actions">
-                        <button class="btn-action" onclick="editerAffiche(event, ${a.id})">Éditer</button>
-                        <button class="btn-action" style="color: #c0392b;" onclick="supprimerAffiche(event, ${a.id})">✕</button>
-                    </div>
-                    <div class="affiche-visuel ${a.taille}" style="${bgStyle}" onclick="ouvrirLien(${a.id}, '${a.url}')">
-                        <span>${a.titre}</span>
-                        ${iconLien}
-                    </div>
-                    <div class="affiche-corps">
-                        <h3 class="affiche-titre">${a.titre}</h3>
-                        <div class="affiche-footer">
-                            <span class="affiche-badge" style="background-color: ${a.couleur}">${a.badge}</span>
-                            <div class="affiche-interactions">
-                                <button class="btn-interact btn-like" onclick="likerAffiche(${a.id})" title="J'aime (Empreinte)">
-                                    ${svgEmpreinte} <span>${a.likes || 0}</span>
-                                </button>
-                                <button class="btn-interact" onclick="partagerAffiche('${a.titre}', '${a.url}')" title="Partager">
-                                    ◎
-                                </button>
-                                <button class="btn-interact" onclick="ouvrirCommentaires(${a.id})" title="Commentaires">
-                                    💬 <span>${nbComms}</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                wrapper.appendChild(el);
-                conteneur.appendChild(wrapper);
-            });
-        }
-
-        async function rechercherGiphy() {
-            const query = document.getElementById('giphyQuery').value;
-            const grid = document.getElementById('giphyResults');
-            if (!query) return;
-
-            grid.style.display = 'grid';
-            grid.innerHTML = 'Chargement...';
-
-            try {
-                const apiKey = 'dc6zaTOxFJmzC';
-                const res = await fetch(`https://api.giphy.com/v1/gifs/search?q=${encodeURIComponent(query)}&limit=6&api_key=${apiKey}`);
-                const data = await res.json();
-
-                grid.innerHTML = '';
-                if (data.data && data.data.length > 0) {
-                    data.data.forEach(gif => {
-                        const img = document.createElement('img');
-                        img.src = gif.images.fixed_height_small.url;
-                        img.alt = gif.title;
-                        img.onclick = () => {
-                            document.getElementById('bgImageInput').value = gif.images.original.url;
-                            grid.style.display = 'none';
-                        };
-                        grid.appendChild(img);
-                    });
-                } else {
-                    grid.innerHTML = 'Aucun GIF trouvé.';
-                }
-            } catch (err) {
-                grid.innerHTML = 'Erreur lors de la recherche Giphy.';
-            }
-        }
-
-        function likerAffiche(id) {
-            const a = affiches.find(item => item.id === id);
-            if (a) {
-                a.likes = (a.likes || 0) + 1;
-                sauvegarderDonnees();
-                afficherAffiches();
-            }
-        }
-
-        function partagerAffiche(titre, url) {
-            const lienPartage = url || window.location.href;
-            if (navigator.share) {
-                navigator.share({ title: titre, url: lienPartage });
-            } else {
-                navigator.clipboard.writeText(lienPartage);
-                alert("Lien de l'affiche copié dans le presse-papier !");
-            }
-        }
-
-        function ouvrirLien(id, url) {
-            if (!url || modeEdition) return;
-            const a = affiches.find(item => item.id === id);
-            if (a) {
-                a.clics = (a.clics || 0) + 1;
-                sauvegarderDonnees();
-            }
-            window.open(url, '_blank');
-        }
-
-        function verifierLiensIntegrees(texte) {
-            const regexLien = /(https?:\/\/|www\.|[a-zA-Z0-9-]+\.[a-zA-Z]{2,})/i;
-            return regexLien.test(texte);
-        }
-
-        function ajouterCommentaire(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('commAfficheId').value);
-            const nom = document.getElementById('commNom').value;
-            const texte = document.getElementById('commTexte').value;
-
-            if (verifierLiensIntegrees(texte) || verifierLiensIntegrees(nom)) {
-                alert("Désolé, les liens web ne sont pas autorisés dans les commentaires.");
-                return;
-            }
-
-            commentaires.push({
-                id: Date.now(),
-                afficheId: id,
-                auteur: nom,
-                texte: texte,
-                statut: 'en_attente'
-            });
-
-            sauvegarderDonnees();
-            alert("Commentaire envoyé ! Il apparaîtra après modération.");
-            document.getElementById('commTexte').value = '';
-            fermerModal('modalCommentaires');
-        }
-
-        function ouvrirCommentaires(id) {
-            document.getElementById('commAfficheId').value = id;
-            const commsAffiche = commentaires.filter(c => c.afficheId === id && c.statut === 'approuve');
-            const listeEl = document.getElementById('listeCommModal');
-            
-            listeEl.innerHTML = commsAffiche.length ? '' : '<p style="opacity: 0.7;">Aucun commentaire pour l\'instant.</p>';
-            commsAffiche.forEach(c => {
-                listeEl.innerHTML += `
-                    <div class="comm-item">
-                        <div class="comm-auteur">${c.auteur}</div>
-                        <div>${c.texte}</div>
-                    </div>
-                `;
-            });
-            document.getElementById('modalCommentaires').style.display = 'flex';
-        }
-
-        function ouvrirStats() {
-            document.getElementById('statVues').textContent = localStorage.getItem('statsVues') || 1;
-            document.getElementById('statAffiches').textContent = affiches.length;
-            document.getElementById('statLikes').textContent = affiches.reduce((acc, a) => acc + (a.likes || 0), 0);
-            document.getElementById('statClics').textContent = affiches.reduce((acc, a) => acc + (a.clics || 0), 0);
-
-            const modEl = document.getElementById('moderationListe');
-            modEl.innerHTML = commentaires.length ? '' : '<p style="opacity: 0.7;">Aucun commentaire à modérer.</p>';
-            
-            commentaires.forEach(c => {
-                modEl.innerHTML += `
-                    <div class="comm-item">
-                        <div class="comm-auteur">${c.auteur} - <small>Statut: ${c.statut}</small></div>
-                        <div>${c.texte}</div>
-                        <div class="comm-actions">
-                            ${c.statut !== 'approuve' ? `<button class="btn-action" onclick="changerStatutComm(${c.id}, 'approuve')">Approuver</button>` : ''}
-                            <button class="btn-action" style="color:red;" onclick="supprimerComm(${c.id})">Supprimer</button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            document.getElementById('modalStats').style.display = 'flex';
-        }
-
-        function changerStatutComm(id, statut) {
-            const c = commentaires.find(item => item.id === id);
-            if (c) {
-                c.statut = statut;
-                sauvegarderDonnees();
-                ouvrirStats();
-                afficherAffiches();
-            }
-        }
-
-        function supprimerComm(id) {
-            commentaires = commentaires.filter(item => item.id !== id);
-            sauvegarderDonnees();
-            ouvrirStats();
-            afficherAffiches();
-        }
-
-        function ouvrirModalAjout() {
-            document.getElementById('afficheForm').reset();
-            document.getElementById('afficheId').value = '';
-            document.getElementById('giphyResults').style.display = 'none';
-            document.getElementById('modalTitreText').textContent = 'Nouvelle Affiche';
-            document.getElementById('modalForm').style.display = 'flex';
-        }
-
-        function editerAffiche(e, id) {
-            e.stopPropagation();
-            const a = affiches.find(item => item.id === id);
-            if (!a) return;
-
-            document.getElementById('afficheId').value = a.id;
-            document.getElementById('titreInput').value = a.titre;
-            document.getElementById('bgImageInput').value = a.bgImage || '';
-            document.getElementById('urlInput').value = a.url || '';
-            document.getElementById('badgeInput').value = a.badge;
-            document.getElementById('tailleSelect').value = a.taille;
-            document.getElementById('couleurSelect').value = a.couleur;
-            document.getElementById('formeSelect').value = a.forme;
-            document.getElementById('textureSelect').value = a.texture;
-            document.getElementById('giphyResults').style.display = 'none';
-
-            document.getElementById('modalTitreText').textContent = 'Modifier l\'Affiche';
-            document.getElementById('modalForm').style.display = 'flex';
-        }
-
-        function fermerModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        function sauvegarderAffiche(e) {
-            e.preventDefault();
-            const id = document.getElementById('afficheId').value;
-            const nouvelleAffiche = {
-                id: id ? parseInt(id) : Date.now(),
-                titre: document.getElementById('titreInput').value,
-                bgImage: document.getElementById('bgImageInput').value,
-                url: document.getElementById('urlInput').value,
-                badge: document.getElementById('badgeInput').value,
-                taille: document.getElementById('tailleSelect').value,
-                couleur: document.getElementById('couleurSelect').value,
-                forme: document.getElementById('formeSelect').value,
-                texture: document.getElementById('textureSelect').value,
-                likes: id ? (affiches.find(a => a.id === parseInt(id))?.likes || 0) : 0,
-                clics: id ? (affiches.find(a => a.id === parseInt(id))?.clics || 0) : 0
-            };
-
-            if (id) {
-                const index = affiches.findIndex(item => item.id === parseInt(id));
-                affiches[index] = nouvelleAffiche;
-            } else {
-                affiches.push(nouvelleAffiche);
-            }
-
-            sauvegarderDonnees();
-            afficherAffiches();
-            fermerModal('modalForm');
-        }
-
         function supprimerAffiche(e, id) {
             e.stopPropagation();
             if (confirm("Supprimer cette affiche ?")) {
@@ -966,8 +808,9 @@
             }
         }
 
+        // Initialisation au chargement
+        appliquerConfigGlobale();
         afficherAffiches();
     </script>
 </body>
 </html>
-
