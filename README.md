@@ -518,7 +518,7 @@
 
     <!-- Pied de page dynamique (Copyright, Nom, Brand, Année, Disclaimer) -->
     <footer>
-        <div id="footerCopyright">© Tous droits réservés à Louise Émilie Schreiber</div>
+        <div id="footerCopyright">2026 © Tous droits réservés à Louise Émilie Schreiber</div>
         <div id="footerBrandDetails" style="font-size: 0.8rem; opacity: 0.8;"></div>
         <div id="footerDisclaimer" style="font-size: 0.75rem; opacity: 0.7;"></div>
     </footer>
@@ -801,9 +801,9 @@
             }
 
             // Footer
+            const year = configGlobal.year || "2026";
             const cpType = configGlobal.copyrightType || "© Tous droits réservés";
             const owner = configGlobal.ownerName || "";
-            const year = configGlobal.year || "2026";
             document.getElementById('footerCopyright').textContent = `${cpType} ${year} ${owner ? 'à ' + owner : ''}`;
 
             let brandText = [];
@@ -885,7 +885,7 @@
                                     ◎
                                 </button>
                                 <button class="btn-interact" onclick="ouvrirCommentaires(${a.id})" title="Commentaires">
-                                    💬 <span>${nbComms}</span>
+                                    <span>${nbComms}</span>
                                 </button>
                             </div>
                         </div>
