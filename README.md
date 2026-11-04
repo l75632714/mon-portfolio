@@ -573,7 +573,7 @@
                     </select>
                 </div>
 
-                                <!-- Palette chromatique complète & Harmonisation -->
+                                    <!-- Palette chromatique complète & Harmonisation -->
                 <div class="form-champ">
                     <label for="couleurSelect">Couleur de fond (Palette libre)</label>
                     <div class="color-picker-row">
@@ -633,6 +633,11 @@
                         <option value="Quicksand">Quicksand</option>
                         <option value="Space Mono">Space Mono</option>
                     </select>
+                </div>
+
+                <div class="form-champ">
+                    <label for="mediumUrlInput">Lien du profil Medium</label>
+                    <input type="url" id="mediumUrlInput" value="https://medium.com/@louisemilieschreiber" placeholder="https://medium.com/@votre-profil">
                 </div>
 
                 <div class="form-champ">
@@ -701,7 +706,7 @@
         </div>
     </div>
 
-        <!-- Modal Stats & Modération -->
+    <!-- Modal Stats & Modération -->
     <div class="modal-overlay" id="modalStats">
         <div class="modal-fenetre">
             <h2 class="modal-titre">Statistiques & Modération</h2>
@@ -775,16 +780,25 @@
             companyName: "",
             brandName: "",
             year: "2026",
-            disclaimer: ""
+            disclaimer: "",
+            mediumUrl: "https://medium.com/@louisemilieschreiber"
         };
 
         localStorage.setItem('statsVues', statsVues);
 
-                function appliquerConfigGlobale() {
+        function appliquerConfigGlobale() {
             // Police
             const fontName = configGlobal.font || "Segoe UI";
             document.getElementById('googleFontLink').href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@400;600;700&display=swap`;
             document.documentElement.style.setProperty('--custom-font', `'${fontName}', sans-serif`);
+
+            // Lien Medium Header
+            const mediumBtn = document.getElementById('mediumHeaderLink');
+            if (mediumBtn) {
+                const url = configGlobal.mediumUrl || "https://medium.com/@louisemilieschreiber";
+                mediumBtn.href = url;
+                mediumBtn.style.display = url ? 'inline-block' : 'none';
+            }
 
             // Footer
             const cpType = configGlobal.copyrightType || "© Tous droits réservés";
@@ -798,6 +812,381 @@
             document.getElementById('footerBrandDetails').textContent = brandText.join(' | ');
             document.getElementById('footerDisclaimer').textContent = configGlobal.disclaimer || '';
         }
+
+        function sauvegarderDonnees() {
+            localStorage.setItem('affichesPortfolio', JSON.stringify(affiches));
+            localStorage.setItem('commentairesPortfolio', JSON.stringify(commentaires));
+            localStorage.setItem('configPortfolio', JSON.stringify(configGlobal));
+        }
+
+        function toggleModeEdition() {
+            modeEdition = !modeEdition;
+            const btn = document.getElementById('toggleEditBtn');
+            if (modeEdition) {
+                btn.textContent = "Mode Édition : ON";
+                btn.style.backgroundColor = "var(--accent-rose)";
+                document.body.classList.add('mode-edition-actif');
+            } else {
+                btn.textContent = "Mode Édition : OFF";
+                btn.style.backgroundColor = "var(--accent-sage)";
+                document.body.classList.remove('mode-edition-actif');
+            }
+        }
+
+        function afficherAffiches() {
+            const conteneur = document.getElementById('galerieAffiches');
+            conteneur.innerHTML = '';
+
+            affiches.forEach(a => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'affiche-wrapper';
+
+                const el = document.createElement('article');
+                el.className = `affiche ${a.forme} ${a.texture}`;
+                
+                const iconLien = a.url ? '<span class="affiche-link-icon" title="Ouvrir le lien">↗</span>' : '';
+                const nbComms = commentaires.filter(c => c.afficheId === a.id && c.statut === 'approuve').length;
+
+                const bgStyle = a.bgImage 
+                    ? `background-image: url('${a.bgImage}'); background-size: cover; background-position: center;` 
+                    : `background-color: ${a.couleur};`;
+
+                const svgEmpreinte = `
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2a10 10 0 0 0-10 10c0 3 1.2 5.8 3.2 7.8" />
+                        <path d="M12 6a6 6 0 0 0-6 6c0 1.8.7 3.5 1.9 4.8" />
+                        <path d="M12 10a2 2 0 0 0-2 2c0 .6.2 1.2.6 1.6" />
+                        <path d="M12 14a2 2 0 0 1 2-2" />
+                        <path d="M15 12a3 3 0 0 0-3-3" />
+                        <path d="M18 12a6 6 0 0 0-6-6" />
+                        <path d="M21 12a9 9 0 0 0-9-9" />
+                        <path d="M12 18a6 6 0 0 0 5.2-3" />
+                        <path d="M12 22a10 10 0 0 0 8.8-5.2" />
+                    </svg>`;
+
+                el.innerHTML = `
+                    <div class="affiche-actions">
+                        <button class="btn-action" onclick="editerAffiche(event, ${a.id})">Éditer</button>
+                        <button class="btn-action" style="color: #c0392b;" onclick="supprimerAffiche(event, ${a.id})">✕</button>
+                    </div>
+                    <div class="affiche-visuel ${a.taille}" style="${bgStyle}" onclick="ouvrirLien(${a.id}, '${a.url}')">
+                        <span>${a.titre}</span>
+                        ${iconLien}
+                    </div>
+                    <div class="affiche-corps">
+                        <h3 class="affiche-titre">${a.titre}</h3>
+                        <div class="affiche-footer">
+                            <span class="affiche-badge" style="background-color: ${a.couleur}">${a.badge}</span>
+                            <div class="affiche-interactions">
+                                <button class="btn-interact btn-like" onclick="likerAffiche(${a.id})" title="J'aime (Empreinte)">
+                                    ${svgEmpreinte} <span>${a.likes || 0}</span>
+                                </button>
+                                <button class="btn-interact" onclick="partagerAffiche('${a.titre}', '${a.url}')" title="Partager">
+                                    ◎
+                                </button>
+                                <button class="btn-interact" onclick="ouvrirCommentaires(${a.id})" title="Commentaires">
+                                    💬 <span>${nbComms}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                wrapper.appendChild(el);
+                conteneur.appendChild(wrapper);
+            });
+        }
+
+        async function rechercherGiphy() {
+            const query = document.getElementById('giphyQuery').value;
+            const grid = document.getElementById('giphyResults');
+            if (!query) return;
+
+            grid.style.display = 'grid';
+            grid.innerHTML = 'Chargement...';
+
+            try {
+                const apiKey = 'dc6zaTOxFJmzC';
+                const res = await fetch(`https://api.giphy.com/v1/gifs/search?q=${encodeURIComponent(query)}&limit=6&api_key=${apiKey}`);
+                const data = await res.json();
+
+                grid.innerHTML = '';
+                if (data.data && data.data.length > 0) {
+                    data.data.forEach(gif => {
+                        const img = document.createElement('img');
+                        img.src = gif.images.fixed_height_small.url;
+                        img.alt = gif.title;
+                        img.onclick = () => {
+                            document.getElementById('bgImageInput').value = gif.images.original.url;
+                            grid.style.display = 'none';
+                        };
+                        grid.appendChild(img);
+                    });
+                } else {
+                    grid.innerHTML = 'Aucun GIF trouvé.';
+                }
+            } catch (err) {
+                grid.innerHTML = 'Erreur lors de la recherche Giphy.';
+            }
+        }
+
+        function appliquerHarmonie(type) {
+            const baseHex = document.getElementById('couleurSelect').value || '#8A9A86';
+            const details = document.getElementById('harmonieDetails');
+            if(!baseHex.startsWith('#')) return;
+
+            let r = parseInt(baseHex.slice(1,3), 16)/255;
+            let g = parseInt(baseHex.slice(3,5), 16)/255;
+            let b = parseInt(baseHex.slice(5,7), 16)/255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+
+            if(max === min) { h = s = 0; }
+            else {
+                let d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch(max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            let hue = Math.round(h * 360);
+
+            if(type === 'complementaire') {
+                let compHue = (hue + 180) % 360;
+                details.textContent = `Complémentaire suggérée (Hue ${compHue}°). Utilisez le sélecteur pour ajuster.`;
+            } else if(type === 'triadique') {
+                let h1 = (hue + 120) % 360;
+                let h2 = (hue + 240) % 360;
+                details.textContent = `Triadique suggérée (Hues ${h1}° et ${h2}°).`;
+            } else if(type === 'tetradique') {
+                let h1 = (hue + 90) % 360;
+                let h2 = (hue + 180) % 360;
+                let h3 = (hue + 270) % 360;
+                details.textContent = `Tétradique suggérée (Hues ${h1}°, ${h2}°, ${h3}°).`;
+            } else {
+                details.textContent = '';
+            }
+        }
+
+        function changerPoliceGoogle(fontName) {
+            document.getElementById('googleFontLink').href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@400;600;700&display=swap`;
+            document.documentElement.style.setProperty('--custom-font', `'${fontName}', sans-serif`);
+        }
+
+        function likerAffiche(id) {
+            const a = affiches.find(item => item.id === id);
+            if (a) {
+                a.likes = (a.likes || 0) + 1;
+                sauvegarderDonnees();
+                afficherAffiches();
+            }
+        }
+
+        function partagerAffiche(titre, url) {
+            const lienPartage = url || window.location.href;
+            if (navigator.share) {
+                navigator.share({ title: titre, url: lienPartage });
+            } else {
+                navigator.clipboard.writeText(lienPartage);
+                alert("Lien de l'affiche copié dans le presse-papier !");
+            }
+        }
+
+        function ouvrirLien(id, url) {
+            if (!url || modeEdition) return;
+            const a = affiches.find(item => item.id === id);
+            if (a) {
+                a.clics = (a.clics || 0) + 1;
+                sauvegarderDonnees();
+            }
+            window.open(url, '_blank');
+        }
+
+        function verifierLiensIntegrees(texte) {
+            const regexLien = /(https?:\/\/|www\.|[a-zA-Z0-9-]+\.[a-zA-Z]{2,})/i;
+            return regexLien.test(texte);
+        }
+
+        function ajouterCommentaire(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('commAfficheId').value);
+            const nom = document.getElementById('commNom').value;
+            const texte = document.getElementById('commTexte').value;
+
+            if (verifierLiensIntegrees(texte) || verifierLiensIntegrees(nom)) {
+                alert("Désolé, les liens web ne sont pas autorisés dans les commentaires.");
+                return;
+            }
+
+            commentaires.push({
+                id: Date.now(),
+                afficheId: id,
+                auteur: nom,
+                texte: texte,
+                statut: 'en_attente'
+            });
+
+            sauvegarderDonnees();
+            alert("Commentaire envoyé ! Il apparaîtra après modération.");
+            document.getElementById('commTexte').value = '';
+            fermerModal('modalCommentaires');
+        }
+
+        function ouvrirCommentaires(id) {
+            document.getElementById('commAfficheId').value = id;
+            const commsAffiche = commentaires.filter(c => c.afficheId === id && c.statut === 'approuve');
+            const listeEl = document.getElementById('listeCommModal');
+            
+            listeEl.innerHTML = commsAffiche.length ? '' : '<p style="opacity: 0.7;">Aucun commentaire pour l\'instant.</p>';
+            commsAffiche.forEach(c => {
+                listeEl.innerHTML += `
+                    <div class="comm-item">
+                        <div class="comm-auteur">${c.auteur}</div>
+                        <div>${c.texte}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('modalCommentaires').style.display = 'flex';
+        }
+
+        function ouvrirStats() {
+            document.getElementById('statVues').textContent = localStorage.getItem('statsVues') || 1;
+            document.getElementById('statAffiches').textContent = affiches.length;
+            document.getElementById('statLikes').textContent = affiches.reduce((acc, a) => acc + (a.likes || 0), 0);
+            document.getElementById('statClics').textContent = affiches.reduce((acc, a) => acc + (a.clics || 0), 0);
+
+            const modEl = document.getElementById('moderationListe');
+            modEl.innerHTML = commentaires.length ? '' : '<p style="opacity: 0.7;">Aucun commentaire à modérer.</p>';
+            
+            commentaires.forEach(c => {
+                modEl.innerHTML += `
+                    <div class="comm-item">
+                        <div class="comm-auteur">${c.auteur} - <small>Statut: ${c.statut}</small></div>
+                        <div>${c.texte}</div>
+                        <div class="comm-actions">
+                            ${c.statut !== 'approuve' ? `<button class="btn-action" onclick="changerStatutComm(${c.id}, 'approuve')">Approuver</button>` : ''}
+                            <button class="btn-action" style="color:red;" onclick="supprimerComm(${c.id})">Supprimer</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('modalStats').style.display = 'flex';
+        }
+
+        function changerStatutComm(id, statut) {
+            const c = commentaires.find(item => item.id === id);
+            if (c) {
+                c.statut = statut;
+                sauvegarderDonnees();
+                ouvrirStats();
+                afficherAffiches();
+            }
+        }
+
+        function supprimerComm(id) {
+            commentaires = commentaires.filter(item => item.id !== id);
+            sauvegarderDonnees();
+            ouvrirStats();
+            afficherAffiches();
+        }
+
+        function ouvrirModalAjout() {
+            document.getElementById('afficheForm').reset();
+            document.getElementById('afficheId').value = '';
+            document.getElementById('giphyResults').style.display = 'none';
+            document.getElementById('modalTitreText').textContent = 'Nouvelle Affiche';
+
+            document.getElementById('googleFontSelect').value = configGlobal.font;
+            document.getElementById('mediumUrlInput').value = configGlobal.mediumUrl || "https://medium.com/@louisemilieschreiber";
+            document.getElementById('copyrightTypeSelect').value = configGlobal.copyrightType;
+            document.getElementById('ownerNameInput').value = configGlobal.ownerName;
+            document.getElementById('companyNameInput').value = configGlobal.companyName;
+            document.getElementById('brandNameInput').value = configGlobal.brandName;
+            document.getElementById('yearInput').value = configGlobal.year;
+            document.getElementById('disclaimerInput').value = configGlobal.disclaimer;
+
+            document.getElementById('modalForm').style.display = 'flex';
+        }
+
+        function editerAffiche(e, id) {
+            e.stopPropagation();
+            const a = affiches.find(item => item.id === id);
+            if (!a) return;
+
+            document.getElementById('afficheId').value = a.id;
+            document.getElementById('titreInput').value = a.titre;
+            document.getElementById('bgImageInput').value = a.bgImage || '';
+            document.getElementById('urlInput').value = a.url || '';
+            document.getElementById('badgeInput').value = a.badge;
+            document.getElementById('tailleSelect').value = a.taille;
+            document.getElementById('couleurSelect').value = a.couleur;
+            if(a.couleur.startsWith('#')) {
+                document.getElementById('couleurPicker').value = a.couleur;
+            }
+            document.getElementById('formeSelect').value = a.forme;
+            document.getElementById('textureSelect').value = a.texture;
+            document.getElementById('giphyResults').style.display = 'none';
+
+            document.getElementById('googleFontSelect').value = configGlobal.font;
+            document.getElementById('mediumUrlInput').value = configGlobal.mediumUrl || "https://medium.com/@louisemilieschreiber";
+            document.getElementById('copyrightTypeSelect').value = configGlobal.copyrightType;
+            document.getElementById('ownerNameInput').value = configGlobal.ownerName;
+            document.getElementById('companyNameInput').value = configGlobal.companyName;
+            document.getElementById('brandNameInput').value = configGlobal.brandName;
+            document.getElementById('yearInput').value = configGlobal.year;
+            document.getElementById('disclaimerInput').value = configGlobal.disclaimer;
+
+            document.getElementById('modalTitreText').textContent = 'Modifier l\'Affiche';
+            document.getElementById('modalForm').style.display = 'flex';
+        }
+
+        function fermerModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function sauvegarderAffiche(e) {
+            e.preventDefault();
+            const id = document.getElementById('afficheId').value;
+            const nouvelleAffiche = {
+                id: id ? parseInt(id) : Date.now(),
+                titre: document.getElementById('titreInput').value,
+                bgImage: document.getElementById('bgImageInput').value,
+                url: document.getElementById('urlInput').value,
+                badge: document.getElementById('badgeInput').value,
+                taille: document.getElementById('tailleSelect').value,
+                couleur: document.getElementById('couleurSelect').value,
+                forme: document.getElementById('formeSelect').value,
+                texture: document.getElementById('textureSelect').value,
+                likes: id ? (affiches.find(a => a.id === parseInt(id))?.likes || 0) : 0,
+                clics: id ? (affiches.find(a => a.id === parseInt(id))?.clics || 0) : 0
+            };
+
+            configGlobal = {
+                font: document.getElementById('googleFontSelect').value,
+                mediumUrl: document.getElementById('mediumUrlInput') ? document.getElementById('mediumUrlInput').value : "https://medium.com/@louisemilieschreiber",
+                copyrightType: document.getElementById('copyrightTypeSelect').value,
+                ownerName: document.getElementById('ownerNameInput').value,
+                companyName: document.getElementById('companyNameInput').value,
+                brandName: document.getElementById('brandNameInput').value,
+                year: document.getElementById('yearInput').value,
+                disclaimer: document.getElementById('disclaimerInput').value
+            };
+
+            if (id) {
+                const index = affiches.findIndex(item => item.id === parseInt(id));
+                affiches[index] = nouvelleAffiche;
+            } else {
+                affiches.push(nouvelleAffiche);
+            }
+
+            sauvegarderDonnees();
+            appliquerConfigGlobale();
+            afficherAffiches();
+            fermerModal('modalForm');
+        }
+
         function supprimerAffiche(e, id) {
             e.stopPropagation();
             if (confirm("Supprimer cette affiche ?")) {
@@ -808,7 +1197,6 @@
             }
         }
 
-        // Initialisation au chargement
         appliquerConfigGlobale();
         afficherAffiches();
     </script>
